@@ -109,6 +109,19 @@ cliprun ~/.bashrc
 # Cats your bashrc and copies it
 ```
 
+### Piping Input
+
+```bash
+echo "hello world" | cliprun
+# Pipes stdin to clipboard
+
+curl https://api.github.com/zen | cliprun
+# Fetches GitHub zen quote and copies it
+
+cat file.txt | grep error | cliprun
+# Filter and copy results
+```
+
 ### Practical Examples
 
 ```bash
@@ -131,6 +144,7 @@ cliprun setup.sh
 |-------|--------|-----------|
 | `cliprun --help` | Shows help | Nothing |
 | `cliprun` (no args) | Error message | Nothing |
+| `echo "x" \| cliprun` | Pipes stdin | Stdin content |
 | `cliprun ls -la` | Executes command | Command stdout |
 | `cliprun file.txt` | Cats the file | File contents |
 | `cliprun ./script.sh` | Executes script | Script output |

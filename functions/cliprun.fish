@@ -18,6 +18,7 @@ function cliprun
         echo "cliprun - Run commands and copy output to clipboard"
         echo ""
         echo "Usage: cliprun [COMMAND | FILE]"
+        echo "       COMMAND | cliprun"
         echo ""
         echo "Description:"
         echo "  Executes a command or displays a file, showing output in the terminal"
@@ -27,10 +28,17 @@ function cliprun
         echo "  cliprun ls -la           # Run command and copy output"
         echo "  cliprun config.txt       # Cat file and copy contents"
         echo "  cliprun date             # Copy current date/time"
+        echo "  echo hello | cliprun     # Pipe stdin to clipboard"
         echo ""
         echo "Options:"
         echo "  -h, --help    Show this help message"
         return 0
+    end
+
+    # Check if stdin is being piped
+    if not isatty stdin
+        cat | tee /dev/tty | eval $clipboard_cmd
+        return
     end
 
     # No arguments
