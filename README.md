@@ -11,7 +11,7 @@ Perfect for developers who frequently copy command output, configuration snippet
 ## Key Features
 
 - **Dual Output**: Displays command output in the terminal while copying to clipboard
-- **Smart File Handling**: Automatically cats non-executable text files
+- **Smart File Handling**: Automatically cats non-executable files
 - **Clean Output**: Stderr is filtered out by default for cleaner clipboard content
 - **Safety First**: Prevents accidental directory operations with graceful error messages
 - **Zero Configuration**: Works immediately after installation with sensible defaults
