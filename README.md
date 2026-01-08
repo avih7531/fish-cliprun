@@ -67,12 +67,17 @@ sudo dnf install xsel
 fisher install avih7531/fish-cliprun
 ```
 
+Fisher will automatically install the function and shell completions.
+
 ### Manual Installation
 
-Clone this repository into your Fish functions directory:
+Clone this repository and copy files to your Fish config directory:
 
 ```bash
-git clone https://github.com/avih7531/fish-cliprun.git ~/.config/fish/functions/
+git clone https://github.com/avih7531/fish-cliprun.git
+cd fish-cliprun
+cp functions/cliprun.fish ~/.config/fish/functions/
+cp completions/cliprun.fish ~/.config/fish/completions/
 ```
 
 ## Usage
