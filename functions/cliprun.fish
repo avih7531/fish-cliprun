@@ -1,6 +1,7 @@
 function cliprun
     # Parse options
     set -l show_stderr 0
+    set -l quiet_mode 0
     set -l new_argv
     
     for arg in $argv
@@ -21,13 +22,17 @@ function cliprun
                 echo "  cliprun date             # Copy current date/time"
                 echo "  echo hello | cliprun     # Pipe stdin to clipboard"
                 echo "  cliprun -e gcc prog.c    # Include stderr in output"
+                echo "  cliprun -q date          # Copy silently without terminal output"
                 echo ""
                 echo "Options:"
                 echo "  -e, --stderr  Include stderr in output (default: filtered)"
+                echo "  -q, --quiet   Silent mode, copy without terminal output"
                 echo "  -h, --help    Show this help message"
                 return 0
             case -e --stderr
                 set show_stderr 1
+            case -q --quiet
+                set quiet_mode 1
             case '*'
                 set -a new_argv $arg
         end
@@ -49,7 +54,11 @@ function cliprun
 
     # Check if stdin is being piped
     if not isatty stdin
-        cat | tee /dev/tty | eval $clipboard_cmd
+        if test $quiet_mode -eq 1
+            cat | eval $clipboard_cmd
+        else
+            cat | tee /dev/tty | eval $clipboard_cmd
+        end
         return
     end
 
@@ -72,12 +81,18 @@ function cliprun
         return 1
     end
 
+    # Set display command based on quiet mode
+    set -l display_cmd "tee /dev/tty"
+    if test $quiet_mode -eq 1
+        set display_cmd "cat"
+    end
+
     # Single argument that is a non-executable file → cat
     if test (count $new_argv) -eq 1; and test -f $new_argv[1]; and not test -x $new_argv[1]
-        eval "cat $new_argv[1] $stderr_redirect | tee /dev/tty | $clipboard_cmd"
+        eval "cat $new_argv[1] $stderr_redirect | $display_cmd | $clipboard_cmd"
         return
     end
 
     # Otherwise, treat as command
-    eval "command $new_argv $stderr_redirect | tee /dev/tty | $clipboard_cmd"
+    eval "command $new_argv $stderr_redirect | $display_cmd | $clipboard_cmd"
 end

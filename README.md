@@ -105,6 +105,18 @@ cliprun --stderr make test
 # Shows test errors and warnings
 ```
 
+**Quiet mode (`-q` or `--quiet`):**
+
+Copy to clipboard without displaying output in the terminal:
+
+```bash
+cliprun -q date
+# Copies date to clipboard silently
+
+cliprun --quiet curl https://example.com
+# Fetches and copies without showing output
+```
+
 ### Basic Command Execution
 
 ```bash
