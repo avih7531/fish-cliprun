@@ -56,6 +56,15 @@ git clone https://github.com/avih7531/fish-cliprun.git ~/.config/fish/functions/
 
 ## Usage
 
+### Getting Help
+
+```bash
+cliprun --help
+# or
+cliprun -h
+# Displays usage information and examples
+```
+
 ### Basic Command Execution
 
 ```bash
@@ -99,6 +108,8 @@ cliprun setup.sh
 
 | Input | Action | Clipboard |
 |-------|--------|-----------|
+| `cliprun --help` | Shows help | Nothing |
+| `cliprun` (no args) | Error message | Nothing |
 | `cliprun ls -la` | Executes command | Command stdout |
 | `cliprun file.txt` | Cats the file | File contents |
 | `cliprun ./script.sh` | Executes script | Script output |
