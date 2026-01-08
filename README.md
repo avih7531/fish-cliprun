@@ -19,23 +19,44 @@ Perfect for developers who frequently copy command output, configuration snippet
 ## Requirements
 
 - [Fish shell](https://fishshell.com/) 3.0+
-- [wl-clipboard](https://github.com/bugaevc/wl-clipboard) (provides `wl-copy` for Wayland)
+- One of the following clipboard tools:
+  - [wl-clipboard](https://github.com/bugaevc/wl-clipboard) (for Wayland) - provides `wl-copy`
+  - [xclip](https://github.com/astrand/xclip) (for X11)
+  - [xsel](https://github.com/kfish/xsel) (for X11)
 
 ### Installing Dependencies
 
 **Arch Linux:**
 ```bash
+# For Wayland
 sudo pacman -S wl-clipboard
+
+# For X11
+sudo pacman -S xclip
+# or
+sudo pacman -S xsel
 ```
 
 **Debian/Ubuntu:**
 ```bash
+# For Wayland
 sudo apt install wl-clipboard
+
+# For X11
+sudo apt install xclip
+# or
+sudo apt install xsel
 ```
 
 **Fedora:**
 ```bash
+# For Wayland
 sudo dnf install wl-clipboard
+
+# For X11
+sudo dnf install xclip
+# or
+sudo dnf install xsel
 ```
 
 ## Installation
@@ -124,7 +145,7 @@ cliprun setup.sh
 
 ## Limitations
 
-- **Wayland Only**: Requires Wayland display server and `wl-copy`
+- **Clipboard Tool Required**: Needs wl-clipboard (Wayland) or xclip/xsel (X11) installed
 - **Stderr Filtered**: Error output is suppressed by default (by design)
 - **Single Shot**: Commands execute once; no interactive mode
 

@@ -1,4 +1,18 @@
 function cliprun
+    # Detect available clipboard tool
+    set -l clipboard_cmd ""
+    if command -v wl-copy >/dev/null 2>&1
+        set clipboard_cmd wl-copy
+    else if command -v xclip >/dev/null 2>&1
+        set clipboard_cmd "xclip -selection clipboard"
+    else if command -v xsel >/dev/null 2>&1
+        set clipboard_cmd "xsel --clipboard --input"
+    else
+        echo "cliprun: no clipboard tool found" >&2
+        echo "Install one of: wl-clipboard (Wayland), xclip (X11), or xsel (X11)" >&2
+        return 1
+    end
+
     # Help flag
     if test (count $argv) -eq 1; and contains -- $argv[1] -h --help
         echo "cliprun - Run commands and copy output to clipboard"
@@ -7,7 +21,7 @@ function cliprun
         echo ""
         echo "Description:"
         echo "  Executes a command or displays a file, showing output in the terminal"
-        echo "  while simultaneously copying stdout to the Wayland clipboard."
+        echo "  while simultaneously copying stdout to the clipboard."
         echo ""
         echo "Examples:"
         echo "  cliprun ls -la           # Run command and copy output"
@@ -34,10 +48,10 @@ function cliprun
 
     # Single argument that is a non-executable file → cat
     if test (count $argv) -eq 1; and test -f $argv[1]; and not test -x $argv[1]
-        cat $argv[1] 2>/dev/null | tee /dev/tty | wl-copy
+        cat $argv[1] 2>/dev/null | tee /dev/tty | eval $clipboard_cmd
         return
     end
 
     # Otherwise, treat as command
-    command $argv 2>/dev/null | tee /dev/tty | wl-copy
+    command $argv 2>/dev/null | tee /dev/tty | eval $clipboard_cmd
 end
