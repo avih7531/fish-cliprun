@@ -43,7 +43,7 @@ sudo dnf install wl-clipboard
 ### Using Fisher
 
 ```bash
-fisher install aviherman/fish-cliprun
+fisher install avih7531/fish-cliprun
 ```
 
 ### Manual Installation
@@ -51,7 +51,7 @@ fisher install aviherman/fish-cliprun
 Clone this repository into your Fish functions directory:
 
 ```bash
-git clone https://github.com/aviherman/fish-cliprun.git ~/.config/fish/functions/
+git clone https://github.com/avih7531/fish-cliprun.git ~/.config/fish/functions/
 ```
 
 ## Usage
@@ -127,4 +127,4 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 ## Author
 
-Created by [aviherman](https://github.com/aviherman)
+Created by [avih7531](https://github.com/avih7531)
