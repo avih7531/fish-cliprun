@@ -86,6 +86,20 @@ cliprun -h
 # Displays usage information and examples
 ```
 
+### Options
+
+**Include stderr (`-e` or `--stderr`):**
+
+By default, stderr is filtered out for cleaner clipboard content. Use this flag to include error output:
+
+```bash
+cliprun -e gcc program.c
+# Includes compilation errors in the output
+
+cliprun --stderr make test
+# Shows test errors and warnings
+```
+
 ### Basic Command Execution
 
 ```bash
@@ -152,10 +166,12 @@ cliprun setup.sh
 
 ## How It Works
 
-1. **Directory Check**: If given a single directory argument, returns an error
-2. **File Detection**: If given a single non-executable file, cats it
-3. **Command Execution**: Otherwise, treats arguments as a command to execute
-4. **Output Pipeline**: All stdout is piped through `tee` to display locally and `wl-copy` for clipboard
+1. **Flag Parsing**: Processes options like `--stderr` before execution
+2. **Stdin Detection**: If input is piped, processes it directly
+3. **Directory Check**: If given a single directory argument, returns an error
+4. **File Detection**: If given a single non-executable file, cats it
+5. **Command Execution**: Otherwise, treats arguments as a command to execute
+6. **Output Pipeline**: All stdout (and optionally stderr) is piped through `tee` to display locally and to the clipboard tool
 
 ## Limitations
 

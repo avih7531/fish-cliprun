@@ -1,4 +1,38 @@
 function cliprun
+    # Parse options
+    set -l show_stderr 0
+    set -l new_argv
+    
+    for arg in $argv
+        switch $arg
+            case -h --help
+                echo "cliprun - Run commands and copy output to clipboard"
+                echo ""
+                echo "Usage: cliprun [OPTIONS] [COMMAND | FILE]"
+                echo "       COMMAND | cliprun [OPTIONS]"
+                echo ""
+                echo "Description:"
+                echo "  Executes a command or displays a file, showing output in the terminal"
+                echo "  while simultaneously copying stdout to the clipboard."
+                echo ""
+                echo "Examples:"
+                echo "  cliprun ls -la           # Run command and copy output"
+                echo "  cliprun config.txt       # Cat file and copy contents"
+                echo "  cliprun date             # Copy current date/time"
+                echo "  echo hello | cliprun     # Pipe stdin to clipboard"
+                echo "  cliprun -e gcc prog.c    # Include stderr in output"
+                echo ""
+                echo "Options:"
+                echo "  -e, --stderr  Include stderr in output (default: filtered)"
+                echo "  -h, --help    Show this help message"
+                return 0
+            case -e --stderr
+                set show_stderr 1
+            case '*'
+                set -a new_argv $arg
+        end
+    end
+    
     # Detect available clipboard tool
     set -l clipboard_cmd ""
     if command -v wl-copy >/dev/null 2>&1
@@ -13,28 +47,6 @@ function cliprun
         return 1
     end
 
-    # Help flag
-    if test (count $argv) -eq 1; and contains -- $argv[1] -h --help
-        echo "cliprun - Run commands and copy output to clipboard"
-        echo ""
-        echo "Usage: cliprun [COMMAND | FILE]"
-        echo "       COMMAND | cliprun"
-        echo ""
-        echo "Description:"
-        echo "  Executes a command or displays a file, showing output in the terminal"
-        echo "  while simultaneously copying stdout to the clipboard."
-        echo ""
-        echo "Examples:"
-        echo "  cliprun ls -la           # Run command and copy output"
-        echo "  cliprun config.txt       # Cat file and copy contents"
-        echo "  cliprun date             # Copy current date/time"
-        echo "  echo hello | cliprun     # Pipe stdin to clipboard"
-        echo ""
-        echo "Options:"
-        echo "  -h, --help    Show this help message"
-        return 0
-    end
-
     # Check if stdin is being piped
     if not isatty stdin
         cat | tee /dev/tty | eval $clipboard_cmd
@@ -42,24 +54,30 @@ function cliprun
     end
 
     # No arguments
-    if test (count $argv) -eq 0
+    if test (count $new_argv) -eq 0
         echo "cliprun: no command or file specified" >&2
         echo "Try 'cliprun --help' for more information." >&2
         return 1
     end
 
+    # Set stderr redirection based on flag
+    set -l stderr_redirect "2>/dev/null"
+    if test $show_stderr -eq 1
+        set stderr_redirect "2>&1"
+    end
+
     # Single argument that is a directory → graceful error
-    if test (count $argv) -eq 1; and test -d $argv[1]
-        echo "cliprun: '$argv[1]' is a directory" >&2
+    if test (count $new_argv) -eq 1; and test -d $new_argv[1]
+        echo "cliprun: '$new_argv[1]' is a directory" >&2
         return 1
     end
 
     # Single argument that is a non-executable file → cat
-    if test (count $argv) -eq 1; and test -f $argv[1]; and not test -x $argv[1]
-        cat $argv[1] 2>/dev/null | tee /dev/tty | eval $clipboard_cmd
+    if test (count $new_argv) -eq 1; and test -f $new_argv[1]; and not test -x $new_argv[1]
+        eval "cat $new_argv[1] $stderr_redirect | tee /dev/tty | $clipboard_cmd"
         return
     end
 
     # Otherwise, treat as command
-    command $argv 2>/dev/null | tee /dev/tty | eval $clipboard_cmd
+    eval "command $new_argv $stderr_redirect | tee /dev/tty | $clipboard_cmd"
 end
